@@ -1,1 +1,0 @@
-hadoop fs -cat /output_wordCount/part-r-00000

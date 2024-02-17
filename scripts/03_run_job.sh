@@ -2,8 +2,10 @@
 
 hadoop dfsadmin -safemode leave
 
+hdfs dfs -rm -r /input_portfolio
+
 hdfs dfs -mkdir -p /input_portfolio
-hdfs dfs -put ./stock_prices.csv /input_portfolio
+hdfs dfs -put ./stock_returns.csv /input_portfolio
 
 hdfs dfs -rm -r /output_portfolio
 

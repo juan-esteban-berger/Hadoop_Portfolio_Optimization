@@ -1,4 +1,8 @@
 /emr/
 /target/
+/pytests/
+quick.sh
+pyquick.sh
+part*
 stock_returns.csv
 .obsidian

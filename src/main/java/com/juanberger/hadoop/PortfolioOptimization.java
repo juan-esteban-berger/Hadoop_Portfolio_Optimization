@@ -19,21 +19,18 @@ public class PortfolioOptimization extends Configured implements Tool {
 
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            // Convert Text to String and split by comma
             String line = value.toString();
-            // Skip header row
             if (line.startsWith("Date")) {
                 return;
             }
             String[] parts = line.split(",");
             if (parts.length > 2) {
-                // Set stock symbol as key, and return as value
                 context.write(new Text(parts[1]), new FloatWritable(Float.parseFloat(parts[2])));
             }
         }
     }
 
-    public static class ReturnsReducer extends Reducer<Text, FloatWritable, Text, FloatWritable> {
+    public static class ReturnsReducer extends Reducer<Text, FloatWritable, Text, Text> {
 
         @Override
         protected void reduce(Text key, Iterable<FloatWritable> values, Context context) throws IOException, InterruptedException {
@@ -43,8 +40,8 @@ public class PortfolioOptimization extends Configured implements Tool {
                 sum += value.get();
                 count++;
             }
-            // Calculate average
-            context.write(key, new FloatWritable(sum / count));
+            String average = String.format("%.6f", sum / count);
+            context.write(key, new Text(average));
         }
     }
 
@@ -60,8 +57,11 @@ public class PortfolioOptimization extends Configured implements Tool {
         job.setMapperClass(ReturnsMapper.class);
         job.setReducerClass(ReturnsReducer.class);
 
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(FloatWritable.class);
+
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(FloatWritable.class);
+        job.setOutputValueClass(Text.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));

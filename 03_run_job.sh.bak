@@ -1,8 +1,0 @@
-#!/bin/bash
-hadoop dfsadmin -safemode leave
-
-hadoop fs -mkdir -p /input_wordCount
-hadoop fs -put ./word_count.txt /input_wordCount
-hadoop fs -rm -r /output_wordCount
-
-hadoop jar target/hadoop-portfolio-optimization-1.0-SNAPSHOT.jar com.juanesh.hadoop.PortfolioOptimization /input_wordCount /output_wordCount
