@@ -1,3 +1,4 @@
-com/juanesh/hadoop/MeanJoin$ReturnsReducer.class
+com/juanesh/hadoop/MeanJoin$ReturnMapper.class
 com/juanesh/hadoop/MeanJoin.class
-com/juanesh/hadoop/MeanJoin$ReturnsMapper.class
+com/juanesh/hadoop/MeanJoin$JoinReducer.class
+com/juanesh/hadoop/MeanJoin$MeanMapper.class

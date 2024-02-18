@@ -31,7 +31,7 @@ public class GetMean extends Configured implements Tool {
     }
 
     public static class ReturnsReducer extends Reducer<Text, FloatWritable, Text, Text> {
-
+    
         @Override
         protected void reduce(Text key, Iterable<FloatWritable> values, Context context) throws IOException, InterruptedException {
             float sum = 0.0f;
@@ -41,7 +41,9 @@ public class GetMean extends Configured implements Tool {
                 count++;
             }
             String average = String.format("%.6f", sum / count);
-            context.write(key, new Text(average));
+    
+            // Change context write here to output comma separated value
+            context.write(new Text(key.toString() + "," + average), null);
         }
     }
 
