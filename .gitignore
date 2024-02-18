@@ -1,5 +1,8 @@
 /emr/
-/target/
+/GetCov/target/
+/GetMean/target/
+/MeanJoin/target/
+/SelfJoin/target/
 stock_returns.csv
 READMEbak.md
 .obsidian
