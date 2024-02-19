@@ -14,7 +14,6 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
-
 public class MeanJoin extends Configured implements Tool {
 
     public static class MeanMapper extends Mapper<LongWritable, Text, Text, Text> {
@@ -38,7 +37,7 @@ public class MeanJoin extends Configured implements Tool {
                 return;
             }
             String[] parts = line.split(",");
-            context.write(new Text(parts[1]), new Text("return\t" + parts[2]));
+            context.write(new Text(parts[1]), new Text("return\t" + parts[0] + "\t" + parts[2]));
         }
     }
 
@@ -53,7 +52,7 @@ public class MeanJoin extends Configured implements Tool {
                 if ("mean".equals(parts[0])) {
                     mean = parts[1];
                 } else if (mean != null && "return".equals(parts[0])) {
-                    context.write(key, new Text(mean + "," + parts[1]));
+                    context.write(key, new Text(parts[1] + "," + mean + "," + parts[2]));
                 }
             }
         }
