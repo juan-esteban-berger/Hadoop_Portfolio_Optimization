@@ -4,6 +4,7 @@ warnings.filterwarnings('ignore')
 import os
 import sys
 import time
+import subprocess
 import contextlib
 import io
 import numpy as np
@@ -81,14 +82,22 @@ df.to_csv('stock_returns.csv')
 num_stocks = len(stocks)
 portfolios_per_file = 10000
 
+def run_command(command):
+    try:
+        subprocess.run(command, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(f"Command executed successfully: {command}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing command: {command}\n{e}")
+
 print("Removing old portfolio files...")
-os.system('hdfs dfs -rm -r /07_portfolios')
+run_command('hdfs dfs -rm -r /07_portfolios')
+
 print("Creating new portfolio directory...")
-os.system('hdfs dfs -mkdir -p /07_portfolios')
+run_command('hdfs dfs -mkdir -p /07_portfolios')
 
 print("Starting to generate portfolio files...")
-for file_index in tqdm(range(100)):
-    print(f"Generating file {file_index+1}/100...")
+for file_index in tqdm(range(100), desc="Generating portfolio files"):
+    print(f"\nGenerating file {file_index+1}/100...")
 
     # Generate random weights for portfolios
     weights = np.random.rand(portfolios_per_file, num_stocks)
@@ -103,7 +112,6 @@ for file_index in tqdm(range(100)):
 
     # Melt the DataFrame to have PortfolioID, Stock, Weight structure
     melted_df = weights_df.melt(id_vars='PortfolioID', var_name='Stock', value_name='Weight')
-    print(melted_df)
 
     # Save to CSV without index or header
     file_name = f'part_{file_index:02d}.csv'
@@ -112,10 +120,11 @@ for file_index in tqdm(range(100)):
 
     # Put file into HDFS and remove from local directory
     hdfs_path = f'/07_portfolios/{file_name}'
-    os.system(f'hdfs dfs -put /.{file_name} {hdfs_path}')
+    # Corrected command format for local file path
+    run_command(f'hdfs dfs -put ./{file_name} {hdfs_path}')
     print(f"File {file_name} uploaded to HDFS at {hdfs_path}.")
 
-    os.remove(file_name)
+    run_command(f'rm ./{file_name}')
     print(f"Local file {file_name} deleted.")
 
-print("Portfolio file generation and upload complete.")
+print("\nPortfolio file generation and upload complete.")
