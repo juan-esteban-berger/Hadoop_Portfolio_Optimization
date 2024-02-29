@@ -18,6 +18,8 @@ uri_file = 'mongo_uri.txt'
 with open(uri_file, 'r') as file:
     mongo_uri = file.read().strip()
 
+mongo_uri = st.secrets["mongo_uri"]
+
 # Connect to MongoDB
 client = MongoClient(mongo_uri)
 
