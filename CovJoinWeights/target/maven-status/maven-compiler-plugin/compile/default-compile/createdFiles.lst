@@ -1,0 +1,4 @@
+com/juanesh/hadoop/CovJoinWeights$MeanMapper.class
+com/juanesh/hadoop/CovJoinWeights.class
+com/juanesh/hadoop/CovJoinWeights$JoinReducer.class
+com/juanesh/hadoop/CovJoinWeights$ReturnMapper.class

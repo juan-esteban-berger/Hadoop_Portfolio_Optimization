@@ -1,3 +1,3 @@
-com/juanesh/hadoop/MeanProd$MeanProdMapper.class
+com/juanesh/hadoop/MeanProd$WeightedReturnMapper.class
 com/juanesh/hadoop/MeanProd.class
-com/juanesh/hadoop/MeanProd$MeanProdReducer.class
+com/juanesh/hadoop/MeanProd$WeightedReturnReducer.class

@@ -14,16 +14,22 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 public class MeanJoin extends Configured implements Tool {
 
     public static class MeanMapper extends Mapper<LongWritable, Text, Text, Text> {
 
         @Override
         protected void map(LongWritable key, Text value, Context context)
-            throws IOException, InterruptedException {
+                throws IOException, InterruptedException {
             String line = value.toString();
             String[] parts = line.split(",");
-            context.write(new Text(parts[0]), new Text("mean\t" + parts[1]));
+            if (parts.length == 2) {
+                // Stock symbol as key, "mean" and mean return as value. Parts[0] contains the stock symbol, and parts[1] contains the mean return.
+                context.write(new Text(parts[0]), new Text("mean\t" + parts[1]));
+            }
         }
     }
 
@@ -31,28 +37,37 @@ public class MeanJoin extends Configured implements Tool {
 
         @Override
         protected void map(LongWritable key, Text value, Context context)
-            throws IOException, InterruptedException {
+                throws IOException, InterruptedException {
             String line = value.toString();
-            if (line.startsWith("Date")) {
-                return;
-            }
             String[] parts = line.split(",");
-            context.write(new Text(parts[1]), new Text("return\t" + parts[0] + "\t" + parts[2]));
+            if (parts.length == 3) {
+                // Stock symbol as key, "return" and return data as value. Parts[1] contains the stock symbol, parts[0] contains the date, and parts[2] contains the return.
+                context.write(new Text(parts[1]), new Text("return\t" + parts[0] + "\t" + parts[2]));
+            }
         }
     }
 
-    public static class JoinReducer extends Reducer<Text, Text, Text, Text> {
+    public static class JoinReducer extends Reducer<Text, Text, Text, NullWritable> {
 
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context)
-            throws IOException, InterruptedException {
+                throws IOException, InterruptedException {
             String mean = null;
+            Map<String, String> returnMap = new HashMap<>();
+
             for (Text value : values) {
                 String[] parts = value.toString().split("\t");
                 if ("mean".equals(parts[0])) {
                     mean = parts[1];
-                } else if (mean != null && "return".equals(parts[0])) {
-                    context.write(key, new Text(parts[1] + "," + mean + "," + parts[2]));
+                } else if ("return".equals(parts[0])) {
+                    returnMap.put(parts[1], parts[2]); // Store date and return in map
+                }
+            }
+
+            if (mean != null) {
+                for (Map.Entry<String, String> entry : returnMap.entrySet()) {
+                    String result = key.toString() + "," + entry.getKey() + "," + mean + "," + entry.getValue();
+                    context.write(new Text(result), NullWritable.get());
                 }
             }
         }

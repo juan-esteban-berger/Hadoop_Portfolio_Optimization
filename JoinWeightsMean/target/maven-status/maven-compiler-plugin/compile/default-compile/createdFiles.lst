@@ -1,0 +1,4 @@
+com/juanesh/hadoop/JoinWeightsMean$MeanMapper.class
+com/juanesh/hadoop/JoinWeightsMean$WeightsMapper.class
+com/juanesh/hadoop/JoinWeightsMean.class
+com/juanesh/hadoop/JoinWeightsMean$JoinReducer.class

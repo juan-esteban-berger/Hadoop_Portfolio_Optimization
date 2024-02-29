@@ -5,7 +5,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
@@ -15,32 +14,25 @@ import java.io.IOException;
 
 public class MeanDiff extends Configured implements Tool {
 
-    public static class DifferenceMapper extends Mapper<Object, Text, Text, Text> {
-        @Override
-        protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            // Split the input line into stock, date, mean, return
-            String[] parts = value.toString().split("\t")[1].split(",");
-            if (parts.length == 3) {
-                String stockAndDate = value.toString().split("\t")[0] + "," + parts[0]; // stock,date
-                String mean = parts[1];
-                String returnVal = parts[2];
-                context.write(new Text(stockAndDate), new Text(mean + "," + returnVal));
-            }
-        }
-    }
+    public static class DiffMapper extends Mapper<LongWritable, Text, NullWritable, Text> {
 
-    public static class DifferenceReducer extends Reducer<Text, Text, Text, NullWritable> {
         @Override
-        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            for (Text value : values) {
-                String[] parts = value.toString().split(",");
-                if (parts.length == 2) {
-                    float mean = Float.parseFloat(parts[0]);
-                    float returnVal = Float.parseFloat(parts[1]);
-                    float difference = returnVal - mean;
-                    String output = key.toString() + "," + parts[0] + "," + parts[1] + "," + String.format("%.6f", difference);
-                    context.write(new Text(output), NullWritable.get());
+        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            String line = value.toString();
+            String[] fields = line.split(",");
+
+            if (fields.length == 4) {
+                String result = fields[0] + "," + fields[1] + "," + fields[2] + "," + fields[3];
+                double returnVal;
+                double meanReturn;
+                try {
+                    returnVal = Double.parseDouble(fields[3]);
+                    meanReturn = Double.parseDouble(fields[2]);
+                    result += "," + (returnVal - meanReturn);
+                } catch (NumberFormatException nfe) {
+                    System.err.println("Error parsing number in line: " + line);
                 }
+                context.write(NullWritable.get(), new Text(result));
             }
         }
     }
@@ -52,16 +44,15 @@ public class MeanDiff extends Configured implements Tool {
             return -1;
         }
 
-        Job job = Job.getInstance(getConf(), "Calculate Difference");
+        Job job = Job.getInstance(getConf(), "Mean Diff");
         job.setJarByClass(MeanDiff.class);
-        job.setMapperClass(DifferenceMapper.class);
-        job.setReducerClass(DifferenceReducer.class);
+        job.setMapperClass(DiffMapper.class);
 
-        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputKeyClass(NullWritable.class);
         job.setMapOutputValueClass(Text.class);
 
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(NullWritable.class);
+        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(Text.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));

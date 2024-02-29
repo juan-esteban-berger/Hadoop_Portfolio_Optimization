@@ -18,35 +18,38 @@ import java.util.List;
 public class SelfJoinMean extends Configured implements Tool {
 
     public static class SelfJoinMapper extends Mapper<LongWritable, Text, Text, Text> {
+
         @Override
-        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            // Split the input line
-            String[] parts = value.toString().split(",");
-            if (parts.length > 4) {
-                // Use date as the key
-                String date = parts[1];
-                // Pass the entire row as value
-                context.write(new Text(date), value);
+        protected void map(LongWritable key, Text value, Context context) 
+                throws IOException, InterruptedException {
+            String[] fields = value.toString().split(",");
+            if (fields.length == 5) {
+                context.write(new Text(fields[1]), new Text(fields[0] + "," + fields[4]));
             }
         }
     }
 
     public static class SelfJoinReducer extends Reducer<Text, Text, Text, NullWritable> {
+
         @Override
-        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        protected void reduce(Text key, Iterable<Text> values, Context context) 
+                throws IOException, InterruptedException {
             List<String> records = new ArrayList<>();
-            // Collect all records for the date
             for (Text value : values) {
                 records.add(value.toString());
             }
 
-            // Join every record with every other record having the same date
-            for (int i = 0; i < records.size(); i++) {
-                for (int j = i + 1; j < records.size(); j++) {
-                    String leftValue = records.get(i);
-                    String rightValue = records.get(j);
-                    // Output the joined row
-                    context.write(new Text(leftValue + "," + rightValue), NullWritable.get());
+            for (String record1 : records) {
+                for (String record2 : records) {
+                    String[] parts1 = record1.split(",");
+                    String[] parts2 = record2.split(",");
+                    String stock_x = parts1[0];
+                    String stock_y = parts2[0];
+                    String mean_diff_x = parts1[1];
+                    String mean_diff_y = parts2[1];
+
+                    String csvOutput = key.toString() + "," + stock_x + "," + mean_diff_x + "," + stock_y + "," + mean_diff_y;
+                    context.write(new Text(csvOutput), NullWritable.get());
                 }
             }
         }
@@ -55,19 +58,23 @@ public class SelfJoinMean extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         if (args.length != 2) {
-            System.err.println("Usage: SelfJoinMean <input path> <output path>");
+            System.err.printf("Usage: %s [generic options] <input> <output>\n",
+                    getClass().getSimpleName());
+            ToolRunner.printGenericCommandUsage(System.err);
             return -1;
         }
 
         Job job = Job.getInstance(getConf(), "Self Join Mean");
         job.setJarByClass(SelfJoinMean.class);
+
         job.setMapperClass(SelfJoinMapper.class);
         job.setReducerClass(SelfJoinReducer.class);
 
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(Text.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(NullWritable.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
@@ -80,4 +87,3 @@ public class SelfJoinMean extends Configured implements Tool {
         System.exit(exitCode);
     }
 }
-

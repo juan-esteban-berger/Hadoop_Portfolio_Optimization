@@ -1,3 +1,2 @@
-com/juanesh/hadoop/MeanDiff$DifferenceReducer.class
-com/juanesh/hadoop/MeanDiff$DifferenceMapper.class
 com/juanesh/hadoop/MeanDiff.class
+com/juanesh/hadoop/MeanDiff$DiffMapper.class

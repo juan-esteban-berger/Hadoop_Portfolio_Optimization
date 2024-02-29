@@ -20,8 +20,29 @@
         <module>GetCov</module>
         <module>MeanJoin</module>
         <module>GetMean</module>
+        <module>JoinWeightsMean</module>
+        <module>ExpectedReturn</module>
+        <module>SelfJoinWeights</module>
+	<module>CovJoinWeights</module>
+	<module>MeanDiffProd</module>
+	<module>GetDivisor</module>
+	<module>GetCovDiv</module>
+	<module>JoinCovWeights</module>
+	<module>WeightsCovProd</module>
+	<module>GetRisk</module>
+	<module>FinalResult</module>
+	<module>CsvToMongo</module>
     </modules>
-
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>5.0.0</version>
+            </dependency>
+            <!-- Any other managed dependencies can be added here -->
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -33,6 +54,11 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
             <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.0.0</version>
         </dependency>
     </dependencies>
 

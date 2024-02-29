@@ -20,9 +20,6 @@ public class GetMean extends Configured implements Tool {
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString();
-            if (line.startsWith("Date")) {
-                return;
-            }
             String[] parts = line.split(",");
             if (parts.length > 2) {
                 context.write(new Text(parts[1]), new FloatWritable(Float.parseFloat(parts[2])));
@@ -42,7 +39,6 @@ public class GetMean extends Configured implements Tool {
             }
             String average = String.format("%.6f", sum / count);
     
-            // Change context write here to output comma separated value
             context.write(new Text(key.toString() + "," + average), null);
         }
     }
