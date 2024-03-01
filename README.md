@@ -12,4 +12,4 @@ https://hadoop-portfolio.streamlit.app/
 
 
 ### Resources
-https://medium.com/@financialnoob/introduction-to-portfolio-optimization-and-modern-portfolio-theory-101f663829c4
+- https://medium.com/@financialnoob/introduction-to-portfolio-optimization-and-modern-portfolio-theory-101f663829c4
