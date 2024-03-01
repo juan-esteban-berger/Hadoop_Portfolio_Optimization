@@ -55,3 +55,5 @@ The data pipeline was run on the February 28th, 2021 and the data was downloaded
 
 ### Resources
 - https://medium.com/@financialnoob/introduction-to-portfolio-optimization-and-modern-portfolio-theory-101f663829c4
+- https://www.analyticsvidhya.com/blog/2021/04/portfolio-optimization-using-mpt-in-python/
+- https://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html
