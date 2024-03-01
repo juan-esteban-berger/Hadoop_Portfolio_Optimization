@@ -11,10 +11,13 @@ The results of this portfolio optimization can be viewed in this interactive das
 ![Dashboard](dashboard.png)
 
 This data pipeline was created using Hadoop Map Reduce in Java and Maven was used to manage the dependencies, and Hive was used to examine intermediate results from the various jobs. The data pipeline on an AWS Elastic Map Reduce Cluster with Core Hadoop installed on AWS Linux. The Expected Return of a portoflio can be calculated as:
+
 $$
 \mu_{pf} = w^T \cdot \mu
 $$
+
 and the Risk of a portfolio can be calculated as:
+
 $$
 \sigma_{pf} = \sqrt{w^T \cdot \Sigma \cdot w}
 $$
