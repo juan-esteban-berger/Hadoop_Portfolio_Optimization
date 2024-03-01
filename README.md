@@ -7,8 +7,8 @@ This project demonstrates a simple implmentation of Markowitz's Modern Portfolio
 - ChargePoint Holdings (CHPT)
 
 The results of this portfolio optimization can be viewed in this interactive dashboard:
-https://hadoop-portfolio.streamlit.app/
-
+- https://hadoop-portfolio.streamlit.app/
+![Dashboard](dashboard.png)
 
 
 ### Resources
