@@ -9,6 +9,8 @@ This project demonstrates a simple implmentation of Markowitz's Modern Portfolio
 The results of this portfolio optimization can be viewed in this interactive dashboard:
 - https://hadoop-portfolio.streamlit.app/
 ![Dashboard](dashboard.png)
+The code for said dashboard can be found in the following repository:
+- https://github.com/juan-esteban-berger/port_optim_dashboard
 
 This data pipeline was created using Hadoop Map Reduce in Java and Maven was used to manage the dependencies, and Hive was used to examine intermediate results from the various jobs. The data pipeline on an AWS Elastic Map Reduce Cluster with Core Hadoop installed on AWS Linux. The Expected Return of a portoflio can be calculated as:
 
