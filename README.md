@@ -52,7 +52,7 @@ The data pipeline consisted of the following steps:
 
 
 ### Usage
-The data pipeline was run on the February 28th, 2021 and the data was downloaded from Yahoo Finance using python. AWS Elastic Map Reduce was used to run this pipeline since it already has all the necessary Hadoop dependencies installed. The following bash script can be used to run the pipeline:
+The data used in this project was downloaded from Yahoo Finance using python. AWS Elastic Map Reduce was used to run this pipeline since it already has all the necessary Hadoop dependencies installed. The following bash script can be used to run the pipeline:
 ```bash
 ./run_pipeline.sh
 ```
